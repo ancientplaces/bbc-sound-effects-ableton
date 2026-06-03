@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>BBC Sound Effects</title>
+  <style>
+    @font-face {
+      font-family: "AbletonSansSmall";
+      font-weight: 400;
+      src: url("/Applications/Ableton Live 12.4 Beta.app/Contents/App-Resources/Fonts/AbletonSansSmall-Regular.ttf") format("truetype");
+    }
+    @font-face {
+      font-family: "AbletonSansSmall";
+      font-weight: 700;
+      src: url("/Applications/Ableton Live 12.4 Beta.app/Contents/App-Resources/Fonts/AbletonSansSmall-Bold.ttf") format("truetype");
+    }
+
+    :root {
+      --bg:           hsl(0, 0%, 16%);
+      --bg-raised:    hsl(0, 0%, 20%);
+      --bg-sunken:    hsl(0, 0%, 11%);
+      --border:       hsl(0, 0%, 8%);
+      --border-mid:   hsl(0, 0%, 24%);
+      --text:         hsl(0, 0%, 72%);
+      --text-dim:     hsl(0, 0%, 42%);
+      --accent:       hsl(0, 80%, 42%);   /* BBC red */
+      --accent-dim:   hsl(0, 70%, 34%);
+      --accent-glow:  hsla(0, 80%, 42%, 0.15);
+      --error:        hsl(0, 65%, 58%);
+      --tag-bg:       hsl(0, 0%, 13%);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    * { -webkit-user-select: none; user-select: none; }
+    input, textarea { -webkit-user-select: text; user-select: text; }
+
+    html, body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: "AbletonSansSmall", "Lucida Grande", sans-serif;
+      font-size: 11.5px;
+      height: 100vh;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      padding: 14px 16px;
+      gap: 10px;
+    }
+
+    .hidden { display: none !important; }
+
+    /* ── Header ── */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .header-left { display: flex; align-items: center; gap: 9px; }
+    .bbc-mark {
+      display: flex;
+      gap: 2px;
+      flex-shrink: 0;
+    }
+    .bbc-box {
+      width: 16px;
+      height: 16px;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 7px;
+      font-weight: 700;
+      color: white;
+      letter-spacing: -0.5px;
+    }
+    .page-title {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      color: var(--text);
+    }
+    .page-subtitle {
+      font-size: 10px;
+      color: var(--text-dim);
+      margin-top: 1px;
+    }
+
+    /* ── Divider ── */
+    .divider { height: 1px; background: var(--border-mid); flex-shrink: 0; }
+
+    /* ── Search row ── */
+    .search-row {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+      align-items: flex-end;
+    }
+
+    .search-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .label {
+      font-size: 10px;
+      color: var(--text-dim);
+      letter-spacing: 0.04em;
+    }
+
+    #query {
+      width: 100%;
+      background: var(--bg-sunken);
+      border: 1px solid var(--border);
+      border-bottom: 2px solid var(--accent-dim);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 12px;
+      padding: 6px 9px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    #query:focus { border-color: var(--accent); border-bottom-color: var(--accent); }
+    #query::placeholder { color: var(--text-dim); }
+
+    /* ── Filter row ── */
+    .filter-row {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .field { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+
+    select {
+      background: var(--bg-sunken);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 11px;
+      padding: 4px 20px 4px 6px;
+      outline: none;
+      width: 100%;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 5'%3E%3Cpath d='M0 0l5 5 5-5' stroke='%23666' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 6px center;
+      background-size: 8px;
+      transition: border-color 0.12s;
+    }
+    select:focus { border-color: var(--accent-dim); }
+
+    /* ── Buttons ── */
+    .btn {
+      height: 24px;
+      padding: 0 13px;
+      font-size: 11px;
+      font-family: inherit;
+      font-weight: 400;
+      border: 1px solid var(--border-mid);
+      cursor: pointer;
+      background: var(--bg-raised);
+      color: var(--text);
+      white-space: nowrap;
+      transition: background 0.1s, border-color 0.1s;
+      border-radius: 12px;
+    }
+    .btn:hover:not(:disabled) { background: var(--bg-sunken); border-color: var(--text-dim); }
+    .btn:disabled { opacity: 0.35; cursor: default; }
+    .btn.primary {
+      background: var(--accent-dim);
+      border-color: var(--accent-dim);
+      color: #fff;
+      font-weight: 700;
+    }
+    .btn.primary:hover:not(:disabled) { background: var(--accent); border-color: var(--accent); }
+
+    /* ── Results list ── */
+    #results-list {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-height: 0;
+    }
+    #results-list::-webkit-scrollbar { width: 4px; }
+    #results-list::-webkit-scrollbar-track { background: transparent; }
+    #results-list::-webkit-scrollbar-thumb { background: var(--border-mid); border-radius: 2px; }
+    #results-list::-webkit-scrollbar-thumb:hover { background: var(--accent-dim); }
+
+    /* ── Result card ── */
+    .result-card {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 8px 10px 8px 11px;
+      background: var(--bg-raised);
+      border-left: 2px solid transparent;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: border-color 0.1s, background 0.1s;
+    }
+    .result-card:hover {
+      background: hsl(0, 0%, 22%);
+      border-left-color: var(--accent);
+    }
+    .card-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+    .card-desc {
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: var(--text);
+    }
+    .card-location {
+      font-size: 10px;
+      color: var(--text-dim);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .card-meta {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+    .card-dur {
+      font-size: 10px;
+      color: var(--text-dim);
+      flex-shrink: 0;
+    }
+    .card-tag {
+      font-size: 9px;
+      background: var(--tag-bg);
+      color: var(--text-dim);
+      padding: 1px 5px;
+      border-radius: 2px;
+      border: 1px solid var(--border-mid);
+    }
+    .card-tag.cat {
+      background: var(--accent-glow);
+      border-color: var(--accent-dim);
+      color: hsl(0, 60%, 70%);
+    }
+
+    /* ── Preview button ── */
+    .preview-btn {
+      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      background: transparent;
+      border: 1px solid var(--border-mid);
+      border-radius: 50%;
+      color: var(--text-dim);
+      font-size: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      font-family: inherit;
+      transition: border-color 0.1s, color 0.1s, background 0.1s;
+    }
+    .preview-btn:hover { border-color: var(--accent-dim); color: var(--accent); }
+    .preview-btn.playing {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-glow);
+    }
+
+    /* ── Format toggle (WAV / MP3) on hover ── */
+    .card-format {
+      flex-shrink: 0;
+      font-size: 9px;
+      color: var(--text-dim);
+      border: 1px solid var(--border-mid);
+      padding: 2px 5px;
+      border-radius: 2px;
+      cursor: pointer;
+      background: var(--tag-bg);
+      transition: border-color 0.1s, color 0.1s;
+      user-select: none;
+    }
+    .card-format:hover { border-color: var(--accent-dim); color: var(--text); }
+    .card-format.wav { border-color: var(--accent-dim); color: hsl(0, 60%, 70%); }
+
+    /* ── Empty state ── */
+    .empty-state {
+      color: var(--text-dim);
+      text-align: center;
+      padding: 36px 0;
+      line-height: 1.8;
+      font-size: 11px;
+    }
+
+    /* ── Status / footer ── */
+    .status {
+      font-size: 10.5px;
+      color: var(--text-dim);
+      min-height: 14px;
+      flex-shrink: 0;
+      line-height: 1.4;
+    }
+    .status.error { color: var(--error); }
+
+    .footer {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+      margin-top: auto;
+    }
+  </style>
+</head>
+<body oncontextmenu="return false">
+
+  <!-- ── SEARCH PAGE ── -->
+  <div class="page" id="page-search">
+    <div class="header">
+      <div class="header-left">
+        <div class="bbc-mark">
+          <div class="bbc-box">B</div>
+          <div class="bbc-box">B</div>
+          <div class="bbc-box">C</div>
+        </div>
+        <div class="page-title">Sound Effects</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="search-row">
+      <div class="search-wrap">
+        <label class="label" for="query">Search 33,000+ BBC archive recordings</label>
+        <input type="text" id="query" placeholder="thunder, crowd applause, steam train…" />
+      </div>
+      <button class="btn primary" id="search-btn" onclick="startSearch()" style="align-self:flex-end; margin-bottom:1px;">Search</button>
+    </div>
+
+    <div class="filter-row">
+      <div class="field">
+        <label class="label" for="category">Category</label>
+        <select id="category">
+          <option value="">All categories</option>
+          <option value="Nature">Nature</option>
+          <option value="Transport">Transport</option>
+          <option value="Animals">Animals</option>
+          <option value="Daily_Life">Daily Life</option>
+          <option value="Footsteps">Footsteps</option>
+          <option value="Sport">Sport</option>
+          <option value="Electronics">Electronics</option>
+          <option value="Crowds">Crowds</option>
+          <option value="Atmosphere">Atmosphere</option>
+          <option value="Industry">Industry</option>
+          <option value="Comedy">Comedy</option>
+          <option value="Machines">Machines</option>
+          <option value="Destruction">Destruction</option>
+          <option value="Bells">Bells</option>
+          <option value="Birds">Birds</option>
+          <option value="Applause">Applause</option>
+          <option value="Fire">Fire</option>
+          <option value="Medical">Medical</option>
+          <option value="Toys">Toys</option>
+          <option value="Events">Events</option>
+        </select>
+      </div>
+      <div class="field">
+        <label class="label" for="maxdur">Max duration</label>
+        <select id="maxdur">
+          <option value="">Any</option>
+          <option value="5000">≤ 5s</option>
+          <option value="15000">≤ 15s</option>
+          <option value="30000">≤ 30s</option>
+          <option value="60000">≤ 1 min</option>
+          <option value="300000">≤ 5 min</option>
+        </select>
+      </div>
+      <div class="field">
+        <label class="label" for="sortby">Sort</label>
+        <select id="sortby">
+          <option value="">Relevance</option>
+          <option value="duration_asc">Shortest first</option>
+          <option value="duration_desc">Longest first</option>
+          <option value="date_asc">Oldest first</option>
+          <option value="date_desc">Newest first</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="status" id="search-status"></div>
+
+    <div class="footer">
+      <button class="btn" onclick="cancel()">Cancel</button>
+    </div>
+  </div>
+
+  <!-- ── RESULTS PAGE ── -->
+  <div class="page hidden" id="page-results">
+    <div class="header">
+      <div class="header-left">
+        <div class="bbc-mark">
+          <div class="bbc-box">B</div>
+          <div class="bbc-box">B</div>
+          <div class="bbc-box">C</div>
+        </div>
+        <div>
+          <div class="page-title">Sound Effects</div>
+          <div class="page-subtitle" id="results-subtitle"></div>
+        </div>
+      </div>
+      <button class="btn" onclick="backToSearch()">← Back</button>
+    </div>
+
+    <div class="divider"></div>
+
+    <div id="results-list">
+      <div class="empty-state hidden" id="no-results-msg">
+        No sounds found for that query.<br>Try broader terms or a different category.
+      </div>
+    </div>
+
+    <div class="status" id="results-status"></div>
+
+    <div class="footer">
+      <button class="btn" id="more-btn" onclick="loadMore()" style="display:none;">Load more</button>
+      <button class="btn" onclick="cancel()">Cancel</button>
+    </div>
+  </div>
+
+  <script>
+    var API = "https://sound-effects-api.bbcrewind.co.uk";
+    var MEDIA = "https://sound-effects-media.bbcrewind.co.uk";
+    var PAGE_SIZE = 15;
+
+    // ── Bridge ──────────────────────────────────────────────────────────────────
+    function sendResult(value) {
+      var msg = { method: "close_and_send", params: [JSON.stringify(value)] };
+      if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.live) {
+        window.webkit.messageHandlers.live.postMessage(msg);
+      } else if (window.chrome && window.chrome.webview) {
+        window.chrome.webview.postMessage(msg);
+      }
+    }
+    function cancel() { sendResult(null); }
+
+    // ── Pages ──────────────────────────────────────────────────────────────────
+    function showPage(id) {
+      ["page-search", "page-results"].forEach(function(p) {
+        document.getElementById(p).classList.toggle("hidden", p !== id);
+      });
+    }
+    function backToSearch() {
+      stopPreview();
+      setStatus("search-status", "", false);
+      showPage("page-search");
+    }
+
+    // ── Status ──────────────────────────────────────────────────────────────────
+    function setStatus(elId, msg, isError) {
+      var el = document.getElementById(elId);
+      el.textContent = msg;
+      el.className = "status" + (isError ? " error" : "");
+    }
+
+    // ── Duration formatting ──────────────────────────────────────────────────────
+    function fmtDuration(ms) {
+      var s = Math.round(ms / 1000);
+      if (s < 60) return s + "s";
+      var m = Math.floor(s / 60), rem = s % 60;
+      return m + "m " + (rem > 0 ? rem + "s" : "");
+    }
+
+    // ── Pagination state ────────────────────────────────────────────────────────
+    var state = { query: "", category: "", maxDur: "", sortBy: "", from: 0, total: 0 };
+
+    // ── BBC API search ──────────────────────────────────────────────────────────
+    async function searchBbc(query, category, maxDur, sortBy, from) {
+      var criteria = { query: query, limit: PAGE_SIZE, from: from };
+      if (category) criteria.category = category;
+      if (maxDur) criteria.maxDuration = parseInt(maxDur, 10);
+      if (sortBy) criteria.sort = sortBy;
+
+      var resp = await fetch(API + "/api/sfx/search", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify({ criteria: criteria })
+      });
+
+      if (!resp.ok) throw new Error("BBC API error: HTTP " + resp.status);
+      return await resp.json();
+    }
+
+    // ── Audio preview ───────────────────────────────────────────────────────────
+    var currentAudio = null;
+    var currentPlayBtn = null;
+
+    function stopPreview() {
+      if (currentAudio) { currentAudio.pause(); currentAudio.src = ""; currentAudio = null; }
+      if (currentPlayBtn) { currentPlayBtn.textContent = "▶"; currentPlayBtn.classList.remove("playing"); currentPlayBtn = null; }
+    }
+
+    function togglePreview(e, id, btn) {
+      e.stopPropagation();
+      if (currentAudio && currentPlayBtn === btn) { stopPreview(); return; }
+      stopPreview();
+      var audio = new Audio(MEDIA + "/mp3/" + id + ".mp3");
+      currentAudio = audio;
+      currentPlayBtn = btn;
+      btn.textContent = "■";
+      btn.classList.add("playing");
+      audio.onended = function() { if (currentAudio === audio) stopPreview(); };
+      audio.onerror = function() { if (currentAudio === audio) stopPreview(); };
+      audio.play().catch(function() { if (currentAudio === audio) stopPreview(); });
+    }
+
+    // ── Format toggle ───────────────────────────────────────────────────────────
+    function toggleFormat(e, btn) {
+      e.stopPropagation();
+      var isWav = btn.dataset.fmt === "wav";
+      btn.dataset.fmt = isWav ? "mp3" : "wav";
+      btn.textContent = isWav ? "MP3" : "WAV";
+      btn.className = "card-format" + (isWav ? "" : " wav");
+    }
+
+    // ── Render card ─────────────────────────────────────────────────────────────
+    function renderCard(sound) {
+      var card = document.createElement("div");
+      card.className = "result-card";
+
+      // Body
+      var body = document.createElement("div");
+      body.className = "card-body";
+
+      var desc = document.createElement("div");
+      desc.className = "card-desc";
+      // Use bandDescription if available, otherwise description
+      var mainLabel = (sound.additionalMetadata && sound.additionalMetadata.bandDescription)
+        ? sound.additionalMetadata.bandDescription
+        : sound.description;
+      desc.textContent = mainLabel;
+      desc.title = sound.description; // full description on hover
+      body.appendChild(desc);
+
+      // Location / recordist line
+      var locParts = [];
+      if (sound.additionalMetadata) {
+        if (sound.additionalMetadata.locationText) locParts.push(sound.additionalMetadata.locationText);
+        if (sound.additionalMetadata.recordist) locParts.push("rec. " + sound.additionalMetadata.recordist);
+      }
+      if (locParts.length) {
+        var loc = document.createElement("div");
+        loc.className = "card-location";
+        loc.textContent = locParts.join(" · ");
+        body.appendChild(loc);
+      }
+
+      // Meta row: duration + category tags + first 2 tags
+      var meta = document.createElement("div");
+      meta.className = "card-meta";
+
+      var dur = document.createElement("span");
+      dur.className = "card-dur";
+      dur.textContent = fmtDuration(sound.duration);
+      meta.appendChild(dur);
+
+      // Top category
+      if (sound.categories && sound.categories.length) {
+        var catTag = document.createElement("span");
+        catTag.className = "card-tag cat";
+        catTag.textContent = sound.categories[0].className.replace(/_/g, " ");
+        meta.appendChild(catTag);
+      }
+
+      // First 2 descriptive tags
+      if (sound.tags) {
+        sound.tags.slice(0, 2).forEach(function(t) {
+          var tag = document.createElement("span");
+          tag.className = "card-tag";
+          tag.textContent = t;
+          meta.appendChild(tag);
+        });
+      }
+
+      body.appendChild(meta);
+      card.appendChild(body);
+
+      // WAV/MP3 format toggle
+      var fmtBtn = document.createElement("span");
+      fmtBtn.className = "card-format wav";
+      fmtBtn.dataset.fmt = "wav";
+      fmtBtn.textContent = "WAV";
+      fmtBtn.title = "Click to switch between WAV and MP3";
+      fmtBtn.onclick = function(e) { toggleFormat(e, fmtBtn); };
+      card.appendChild(fmtBtn);
+
+      // Preview button
+      var playBtn = document.createElement("button");
+      playBtn.className = "preview-btn";
+      playBtn.textContent = "▶";
+      playBtn.title = "Preview (MP3)";
+      playBtn.onclick = function(e) { togglePreview(e, sound.id, playBtn); };
+      card.appendChild(playBtn);
+
+      // Click card = download + insert
+      card.onclick = function() {
+        stopPreview();
+        sendResult({
+          id: sound.id,
+          description: sound.description,
+          duration: sound.duration,
+          format: fmtBtn.dataset.fmt
+        });
+      };
+
+      return card;
+    }
+
+    // ── Load more ────────────────────────────────────────────────────────────────
+    async function loadMore() {
+      var btn = document.getElementById("more-btn");
+      btn.disabled = true;
+      setStatus("results-status", "Loading more…", false);
+      try {
+        var nextFrom = state.from + PAGE_SIZE;
+        var data = await searchBbc(state.query, state.category, state.maxDur, state.sortBy, nextFrom);
+        if (!data.results || !data.results.length) {
+          btn.style.display = "none";
+          setStatus("results-status", "No more results.", false);
+          return;
+        }
+        var list = document.getElementById("results-list");
+        data.results.forEach(function(s) { list.appendChild(renderCard(s)); });
+        state.from = nextFrom;
+        if (state.from + PAGE_SIZE >= state.total) btn.style.display = "none";
+        setStatus("results-status", "", false);
+      } catch (err) {
+        setStatus("results-status", "Error: " + err.message, true);
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    // ── Main search ──────────────────────────────────────────────────────────────
+    async function startSearch() {
+      var query = document.getElementById("query").value.trim();
+      if (!query) { setStatus("search-status", "Please enter a search term.", true); return; }
+
+      var category = document.getElementById("category").value;
+      var maxDur   = document.getElementById("maxdur").value;
+      var sortBy   = document.getElementById("sortby").value;
+
+      document.getElementById("search-btn").disabled = true;
+      setStatus("search-status", "Searching BBC Sound Effects…", false);
+
+      try {
+        var data = await searchBbc(query, category, maxDur, sortBy, 0);
+
+        if (!data.results || !data.results.length) {
+          setStatus("search-status", "No sounds found. Try different terms.", true);
+          document.getElementById("search-btn").disabled = false;
+          return;
+        }
+
+        showPage("page-results");
+        var list = document.getElementById("results-list");
+        list.innerHTML = "";
+        data.results.forEach(function(s) { list.appendChild(renderCard(s)); });
+
+        state.query = query; state.category = category;
+        state.maxDur = maxDur; state.sortBy = sortBy;
+        state.from = 0; state.total = data.total;
+
+        var action = (window.BBC_MODE === "simpler") ? "click to load into Simpler" : "click to download";
+        document.getElementById("results-subtitle").textContent =
+          data.total.toLocaleString() + " sounds found · " + action;
+
+        var moreBtn = document.getElementById("more-btn");
+        moreBtn.style.display = (state.total > PAGE_SIZE) ? "block" : "none";
+        moreBtn.disabled = false;
+        setStatus("results-status", "", false);
+
+      } catch (err) {
+        setStatus("search-status", "Error: " + err.message, true);
+      } finally {
+        document.getElementById("search-btn").disabled = false;
+      }
+    }
+
+    // ── Keyboard ─────────────────────────────────────────────────────────────────
+    document.addEventListener("keydown", function(e) {
+      if (e.key === "Escape") cancel();
+      if (e.key === "Enter" && !document.getElementById("page-search").classList.contains("hidden")) {
+        startSearch();
+      }
+    });
+
+    // Reset to clean search state every time the dialog opens
+    function resetToSearch() {
+      stopPreview();
+      showPage("page-search");
+      document.getElementById("query").value = "";
+      document.getElementById("results-list").innerHTML = "";
+      document.getElementById("more-btn").style.display = "none";
+      setStatus("search-status", "", false);
+      setStatus("results-status", "", false);
+      document.getElementById("search-btn").disabled = false;
+      document.getElementById("query").focus();
+    }
+
+    // visibilitychange fires when the dialog is reshown (hidden → visible)
+    // This is more reliable than focus/pageshow for reused WebViews
+    document.addEventListener("visibilitychange", function() {
+      if (!document.hidden) resetToSearch();
+    });
+
+    // Also cover fresh page loads
+    window.addEventListener("pageshow", resetToSearch);
+
+    // Immediate call for initial load
+    resetToSearch();
+  </script>
+</body>
+</html>

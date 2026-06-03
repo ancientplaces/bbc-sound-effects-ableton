@@ -1,0 +1,8 @@
+{
+  "name": "bbc-sound-effects",
+  "author": "Lee Howard",
+  "version": "0.1.0",
+  "entry": "dist/extension.js",
+  "minimumApiVersion": "1.0.0",
+  "permissions": ["filesystem", "network"]
+}

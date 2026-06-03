@@ -1,0 +1,21 @@
+{
+  "name": "bbc-sound-effects",
+  "version": "0.1.0",
+  "description": "Search the BBC Sound Effects archive and drop sounds directly into Ableton Live",
+  "type": "module",
+  "scripts": {
+    "start": "tsx build.ts --dev && extensions-cli run",
+    "build": "tsx build.ts",
+    "package": "npm run build && extensions-cli package"
+  },
+  "dependencies": {
+    "@ableton-extensions/sdk": "file:/Users/leehoward/Downloads/Live Extension SDK/extensions-sdk-1.0.0-beta.0/ableton-extensions-sdk-1.0.0-beta.0.tgz"
+  },
+  "devDependencies": {
+    "@ableton-extensions/cli": "file:/Users/leehoward/Downloads/Live Extension SDK/extensions-sdk-1.0.0-beta.0/ableton-extensions-cli-1.0.0-beta.0.tgz",
+    "@types/node": "^22.0.0",
+    "esbuild": "^0.24.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.0.0"
+  }
+}

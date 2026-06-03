@@ -1,0 +1,57 @@
+{
+  "name": "@ableton-extensions/cli",
+  "version": "1.0.0-beta.0",
+  "engines": {
+    "node": ">=22.11.0"
+  },
+  "description": "CLI for developing, running, and packaging Ableton extensions",
+  "homepage": "https://ableton.github.io/extensions-sdk",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "author": "Ableton AG",
+  "type": "module",
+  "bin": {
+    "extensions-cli": "./dist/cli.mjs"
+  },
+  "keywords": [
+    "ableton",
+    "live",
+    "extensions",
+    "sdk",
+    "cli"
+  ],
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
+  },
+  "scripts": {
+    "build": "tsc --noEmit && tsdown --format esm --format cjs",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "archiver": "7.0.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@types/archiver": "7.0.0",
+    "eslint": "10.3.0",
+    "eslint-config-prettier": "10.1.8",
+    "eslint-plugin-prettier": "5.5.5",
+    "globals": "17.6.0",
+    "tsdown": "0.21.10",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.59.2"
+  }
+}
