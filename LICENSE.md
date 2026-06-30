@@ -1,4 +1,4 @@
-Copyright (c) 2026 Lee Howard
+Copyright (c) 2026 Bernard Leon Howard III
 
 ## Personal Use
 
