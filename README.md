@@ -97,4 +97,4 @@ Sounds are free for personal and educational use under the [RemArc licence](http
 
 ## Licence
 
-MIT — do what you like with the code. Note that the BBC Sound Effects content itself has its own separate licence terms.
+See LICENSE.md. Personal use and modification are free; redistributing built releases requires either a proper fork or permission.
